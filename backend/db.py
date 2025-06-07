@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker,declarative_base
 from config import Config
 import asyncpg
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
 
 username=Config.data_base_username
