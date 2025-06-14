@@ -6,6 +6,13 @@ from sqlalchemy import text
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils import hashed_pass,verify
+from utils import create_access_token,decode_token
+from datetime import timedelta
+from fastapi.responses import JSONResponse
+from dependency import accessTOkenBearer
+
+
+refresh_token_expiry=2
 
 
 async def get_db():
@@ -23,13 +30,13 @@ async def register(
     password: str = Form(...),
     email: str = Form(...)
 ):
-    # Check if user exists
+    
     query = text("SELECT * FROM admin WHERE username = :u")
     result = await db.execute(query, {"u": username})
     if result.fetchone():
         raise HTTPException(status_code=409, detail="User already registered")
 
-    # Insert new user
+    
     hashed_password=hashed_pass(password)
     query1 = text("INSERT INTO admin (username, password, email) VALUES (:u, :p, :e)")
     await db.execute(query1, {"u": username, "p": hashed_password, "e": email})
@@ -47,7 +54,29 @@ async def login(db:AsyncSession=Depends(get_db),username:str=Form(...),password:
 
     if result:
         if(verify(password,user.password)):
-            return {"detail":f"welcome {username} credential valid"}
+            access_token=create_access_token(
+                user_data={
+                    'username':username,
+                    'password':password
+                }
+            )
+            refresh_token=create_access_token(
+                user_data={
+                    'username':username,
+                    'password':password
+                },
+                refresh=True,
+                expiry=timedelta(days=refresh_token_expiry)
+            )
+            return JSONResponse(
+                content={"message":"login sucess",
+                         "access_token":access_token,
+                         "refresh_token":refresh_token,
+                         "user":{
+                             "username":username,
+                             "password":user.password
+                         }
+                         })
         else:
             return HTTPException(status_code=400,detail="Invalid password")
     else:
