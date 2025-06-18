@@ -5,7 +5,7 @@
 }
 
 nav {
-    background-color: #0082fb;
+    background-color: #8710d8;
     color: white;
     display: flex;
     justify-content: space-between;
@@ -46,5 +46,5 @@ nav ul li a {
 }
 
 nav ul li a :hover {
-    color: #38bdf8;
+    color: #8710d8;
 }

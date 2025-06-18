@@ -1,12 +1,26 @@
 import React, { useState } from "react";
 import "./Login.css";
+import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 export default function Login() {
     const [logindata, setloginData] = useState({ username: "", password: "" });
+    const [message, setMessage] = useState("");
 
     const handlesubmit = async (e) => {
         e.preventDefault();
-        alert(`Logging in as ${logindata.username}`);
+        try {
+            const res = await axios.post("http://127.0.0.1:8000/login", logindata, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            setMessage(res.data.message)
+
+        } catch (err) {
+            setMessage(err.message)
+        }
+
     };
 
     const handlechange = (e) => {
@@ -20,7 +34,7 @@ export default function Login() {
                 <input
                     type="text"
                     name="username"
-                    placeholder="Email or Username"
+                    placeholder=" Username"
                     value={logindata.username}
                     onChange={handlechange}
                 />
@@ -35,7 +49,7 @@ export default function Login() {
                 <div className="login-footer">
                     <a href="#">Forgot Password?</a>
                     <span>•</span>
-                    <a href="#">Sign Up</a>
+                    <a href="./Register">Sign Up</a>
                 </div>
             </form>
         </div>

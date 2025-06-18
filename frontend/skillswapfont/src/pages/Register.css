@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fa;
+
+}
+
+.regi-container {
+    background: white;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+}
+
+.regi-title {
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+    letter-spacing: 0.03em;
+}
+
+.regi-form input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 15px;
+    background-color: #fafafa;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    color: #333;
+}
+
+.regi-form input::placeholder {
+    color: #a0a0a0;
+    text-transform: capitalize;
+}
+
+.regi-form input:focus {
+    outline: none;
+    border-color: #a435f0;
+    background-color: #fff;
+    box-shadow: 0 0 6px rgba(164, 53, 240, 0.4);
+}
+
+.regi-form button {
+    width: 100%;
+    padding: 14px;
+    background-color: #a435f0;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(164, 53, 240, 0.3);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.regi-form button:hover {
+    background-color: #7d27c1;
+    box-shadow: 0 8px 20px rgba(125, 39, 193, 0.5);
+}
+
+.regi-form button:active {
+    background-color: #5e1ba2;
+    box-shadow: none;
+}
+
+@media (max-width: 420px) {
+    .regi-container {
+        width: 90vw;
+        padding: 30px 20px;
+    }
+}
