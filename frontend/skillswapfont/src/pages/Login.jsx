@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import "./Login.css";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [logindata, setloginData] = useState({ username: "", password: "" });
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
 
     const handlesubmit = async (e) => {
         e.preventDefault();
@@ -15,7 +16,9 @@ export default function Login() {
                     "Content-Type": "application/json"
                 }
             })
-            setMessage(res.data.message)
+            if (res.status == 200) {
+                navigate("./SkillSync")
+            }
 
         } catch (err) {
             setMessage(err.message)
@@ -30,7 +33,7 @@ export default function Login() {
     return (
         <div className="login-container">
             <form className="login-form" onSubmit={handlesubmit}>
-                <h2 className="login-title">Welcome back</h2>
+                <h2 className="login-title">Welcome </h2>
                 <input
                     type="text"
                     name="username"
