@@ -11,7 +11,18 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    display: flex;
+    /* Added */
+}
 
+.regi-form {
+    width: 100%;
+    max-width: 400px;
+    /* Added: makes the form smaller */
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: white;
 }
 
 .regi-title {
@@ -25,15 +36,13 @@ body {
 
 .regi-form input {
     width: 100%;
-    padding: 14px 16px;
-    margin-bottom: 20px;
-    border: 1.5px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 15px;
-    background-color: #fafafa;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-    color: #333;
+    padding: 12px 14px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d7dc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #f7f9fa;
+
 }
 
 .regi-form input::placeholder {
@@ -72,9 +81,11 @@ body {
     box-shadow: none;
 }
 
+/*
 @media (max-width: 420px) {
     .regi-container {
         width: 90vw;
         padding: 30px 20px;
     }
 }
+    */

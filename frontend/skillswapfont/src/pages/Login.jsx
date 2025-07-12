@@ -16,8 +16,10 @@ export default function Login() {
                     "Content-Type": "application/json"
                 }
             })
+            const data = await res.data;
             if (res.status == 200) {
-                navigate("./SkillSync")
+                localStorage.setItem("token", data.access_token)
+                navigate("/SkillSync1")
             }
 
         } catch (err) {

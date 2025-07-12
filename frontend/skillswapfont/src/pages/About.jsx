@@ -12,17 +12,17 @@ export default function About() {
                 <div className="person">
                     <img src={poshan} alt="Poshan Karki" />
                     <p className="name">Poshan Karki</p>
-                    <p className="role">CEO</p>
+
                 </div>
                 <div className="person">
                     <img src={sandesh} alt="Sandesh Subedi" />
                     <p className="name">Sandesh Subedi</p>
-                    <p className="role">CTO</p>
+
                 </div>
                 <div className="person">
                     <img src={laxman} alt="Laxmi Dutt Awasthi" />
                     <p className="name">Laxmi Dutt Awasthi</p>
-                    <p className="role">CMO</p>
+
                 </div>
             </div>
             <p className="about-web">

@@ -23,13 +23,14 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
-          <Route path="/SkillSync" element={<SkillSync />} />
+          <Route path="/SkillSync1" element={<SkillSync1 />} />
+
         </Routes>
       </Router>
 
     </div>
 
-  )
+  );
 
 }
 
