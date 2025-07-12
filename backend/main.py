@@ -10,6 +10,10 @@ from utils import create_access_token,decode_token
 from datetime import timedelta
 from fastapi.responses import JSONResponse
 from dependency import accessTOkenBearer
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from schemas import RegisterRequest,Request
+from schemas import passwordReset
 
 
 refresh_token_expiry=2
@@ -23,23 +27,32 @@ async def get_db():
 app=FastAPI()
 
 
+
+app.add_middleware(
+    CORSMiddleware,
+      allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+
+)
+
+
 @app.post("/register")
-async def register(
-    db: AsyncSession = Depends(get_db),
-    username: str = Form(...),
-    password: str = Form(...),
-    email: str = Form(...)
+async def register(data:RegisterRequest,
+    db: AsyncSession = Depends(get_db)
+   
 ):
     
     query = text("SELECT * FROM admin WHERE username = :u")
-    result = await db.execute(query, {"u": username})
+    result = await db.execute(query, {"u": data.username})
     if result.fetchone():
         raise HTTPException(status_code=409, detail="User already registered")
 
     
-    hashed_password=hashed_pass(password)
+    hashed_password=hashed_pass(data.password)
     query1 = text("INSERT INTO admin (username, password, email) VALUES (:u, :p, :e)")
-    await db.execute(query1, {"u": username, "p": hashed_password, "e": email})
+    await db.execute(query1, {"u": data.username, "p": hashed_password, "e": data.email})
     await db.commit()
 
     return {"detail": "User successfully registered"}
@@ -47,23 +60,23 @@ async def register(
     
 
 @app.post("/login")
-async def login(db:AsyncSession=Depends(get_db),username:str=Form(...),password:str=Form(...)):
+async def login(data:Request,db:AsyncSession=Depends(get_db)):
     query=text("SELECT * FROM admin WHERE username=:u")
-    result= await db.execute(query,{"u":username})
-    user=result.fetchone()
+    result= await db.execute(query,{"u":data.username})
+    user= result.fetchone()
 
     if result:
-        if(verify(password,user.password)):
+        if(verify(data.password,user[1])):
             access_token=create_access_token(
                 user_data={
-                    'username':username,
-                    'password':password
+                    'username':data.username,
+                    'password':data.password
                 }
             )
             refresh_token=create_access_token(
                 user_data={
-                    'username':username,
-                    'password':password
+                    'username':data.username,
+                    'password':data.password
                 },
                 refresh=True,
                 expiry=timedelta(days=refresh_token_expiry)
@@ -73,7 +86,7 @@ async def login(db:AsyncSession=Depends(get_db),username:str=Form(...),password:
                          "access_token":access_token,
                          "refresh_token":refresh_token,
                          "user":{
-                             "username":username,
+                             "username":data.username,
                              "password":user.password
                          }
                          })
@@ -81,3 +94,11 @@ async def login(db:AsyncSession=Depends(get_db),username:str=Form(...),password:
             return HTTPException(status_code=400,detail="Invalid password")
     else:
         return HTTPException(status_code=400,detail="invalid username user is not registered")
+    
+
+
+
+@app.post('/passwordreset')
+async def password_reser(data:passwordReset):
+    pass
+    
