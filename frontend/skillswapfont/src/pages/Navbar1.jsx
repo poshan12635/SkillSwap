@@ -3,6 +3,7 @@ import skill from "/src/assets/skill.png";
 import useri from "/src/assets/useri.png";
 import './Navbar1.css'
 
+
 export default function Navbar1() {
     return (
         <nav className='navbar' >
