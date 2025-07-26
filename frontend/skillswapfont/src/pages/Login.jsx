@@ -19,7 +19,7 @@ export default function Login() {
             const data = await res.data;
             if (res.status == 200) {
                 localStorage.setItem("token", data.access_token)
-                navigate("/SkillSync1")
+                navigate("/skillSync1")
             }
 
         } catch (err) {

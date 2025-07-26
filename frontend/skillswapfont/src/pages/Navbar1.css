@@ -1,59 +1,91 @@
-/* Reset some default styles */
-
+/* Navbar1.css */
 
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    padding: 10px 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    color: white;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
+    background-color: #ffffff;
+    padding: 0.8rem 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
 }
 
 .logoimage {
-    height: 40px;
+    height: 50px;
     width: auto;
     transition: transform 0.3s ease;
 }
 
 .logoimage:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .navbarlink {
     list-style: none;
     display: flex;
     align-items: center;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.user-icon-container {
+    position: relative;
 }
 
 .profile-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 5px;
+    height: 40px;
+    width: 40px;
     border-radius: 50%;
-    transition: background-color 0.3s ease;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    border: 2px solid #ddd;
+    padding: 2px;
 }
 
 .profile-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.profileimage {
-    height: 35px;
-    width: 35px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #fff;
-    transition: transform 0.3s ease;
-}
-
-.profileimage:hover {
     transform: scale(1.1);
+    border-color: #4a90e2;
+}
+
+/* Submenu styling - Optional if not already styled */
+.submenu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: white;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 180px;
+    z-index: 100;
+}
+
+.submenu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.submenu li {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submenu li:hover {
+    background-color: #f0f0f0;
+}
+
+.user-icon-container {
+    position: relative;
+}
+
+.submenu-container {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    z-index: 100;
 }

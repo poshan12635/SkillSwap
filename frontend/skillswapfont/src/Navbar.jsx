@@ -1,5 +1,7 @@
 import React from "react";
 import logo from "/src/assets/logo.png";
+import "./Navbar.css";
+import "./index.css"
 
 
 import './Navbar.css';

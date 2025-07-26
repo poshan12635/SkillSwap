@@ -1,10 +1,7 @@
 from pydantic_settings import BaseSettings,SettingsConfigDict
 
 class Settings(BaseSettings):
-    data_base_username:str
-    data_base_password:str
-    data_base_type:str
-    data_base_name:str
+    DATABASE_URL:str
     algorithim:str
     secret_key:str
     MAIL_USERNAME:str

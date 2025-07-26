@@ -1,19 +1,30 @@
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker,declarative_base
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.orm import declarative_base
 from config import Config
-import asyncpg
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlalchemy import Column,Integer,String,ForeignKey,DATETIME
+from datetime import datetime
 
 
-username=Config.data_base_username
-password=Config.data_base_password
-database=Config.data_base_type
-database_name=Config.data_base_name
 
-database_url=f"{database}+asyncpg://{username}:{password}@localhost/{database_name}"
 
-engine=create_async_engine(database_url,echo=True)
-base=declarative_base()
+database_url = Config.DATABASE_URL
 
-SessionLocal=sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+
+engine = create_async_engine(database_url, echo=True)
+
+
+Base = declarative_base()
+
+
+
+class MessageDetail(Base):
+    __tablename__ = 'messagedetail'
+
+    id = Column(Integer, primary_key=True, index=True)
+    messagesentby = Column(Integer, ForeignKey("userinfo.id"))
+    messagesentto = Column(Integer, ForeignKey("userinfo.id"))
+    message = Column(String)
+    messagedate = Column(DATETIME, default=datetime.utcnow)
+
+SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
+

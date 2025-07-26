@@ -1,0 +1,107 @@
+/* Background container */
+.profileCont {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f3f2ef;
+    /* LinkedIn-like soft gray */
+    padding: 20px;
+}
+
+/* Shared card styling */
+.formcont {
+    background-color: #fff;
+    padding: 40px 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-family: 'Segoe UI', sans-serif;
+    border: 1px solid #dddfe2;
+}
+
+/* Header */
+.formcont h2 {
+    text-align: center;
+    color: #0a66c2;
+    /* LinkedIn blue */
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* Input and select */
+.formcont input,
+.formcont select {
+    padding: 14px 16px;
+    border: 1px solid #ccd0d5;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #f9f9f9;
+}
+
+.formcont input:focus,
+.formcont select:focus {
+    border-color: #0a66c2;
+    box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.2);
+    outline: none;
+    background-color: #fff;
+}
+
+/* Submit button */
+.formcont button {
+    padding: 14px;
+    background-color: #0a66c2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.formcont button:hover {
+    background-color: #004182;
+}
+
+/* Text details */
+.formcont p {
+    font-size: 15px;
+    color: #1d1d1f;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.formcont p strong {
+    color: #0a66c2;
+}
+
+/* Message paragraph */
+.formcont p.message {
+    text-align: center;
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .formcont {
+        padding: 24px 20px;
+    }
+
+    .formcont h2 {
+        font-size: 20px;
+    }
+
+    .formcont input,
+    .formcont select {
+        font-size: 14px;
+        padding: 12px;
+    }
+}

@@ -1,5 +1,7 @@
 import React from "react";
 import Navbar1 from "./Navbar1";
+import Bloglist from "./Bloglist";
+
 
 export default function Dashboard1() {
 
@@ -7,6 +9,8 @@ export default function Dashboard1() {
         <>
 
             <Navbar1 />
+            <Bloglist />
+
         </>
 
     );

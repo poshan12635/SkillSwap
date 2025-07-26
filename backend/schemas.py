@@ -3,6 +3,7 @@ from pydantic import BaseModel
 class Request(BaseModel):
     username:str
     password:str
+    
 
 class RegisterRequest(BaseModel):
     email:str
@@ -17,4 +18,18 @@ class JobCv(BaseModel):
 class passwordReset(BaseModel):
     email:str
 
-    
+class userskill(BaseModel):
+    name:str
+    education:str
+    university:str
+    skill:str
+
+class blogdata(BaseModel):
+    title:str
+    yourself:str
+    detail:str
+    skill:str
+    youdo:str
+    expectfrom:str
+    whyjoin:str
+
