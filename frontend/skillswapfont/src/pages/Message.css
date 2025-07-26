@@ -1,0 +1,129 @@
+.messenger-container {
+    display: flex;
+    height: 100vh;
+    background-color: #0f0f0f;
+    color: #fff;
+}
+
+.sidebar {
+    width: 300px;
+    border-right: 1px solid #333;
+    padding: 1rem;
+    background-color: #1c1c1c;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.contact-list {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.contact-item:hover {
+    background-color: #333;
+}
+
+.contact-item.active {
+    background-color: #444;
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #555;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.chat-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.chat-header {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+    font-weight: bold;
+    background-color: #1c1c1c;
+}
+
+.chat-user {
+    font-size: 1.1rem;
+}
+
+.chat-body {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #121212;
+}
+
+.message-row {
+    display: flex;
+}
+
+.message-row.sent {
+    justify-content: flex-end;
+}
+
+.message-row.received {
+    justify-content: flex-start;
+}
+
+.message-bubble {
+    max-width: 60%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: #006aff;
+    color: #fff;
+    font-size: 0.95rem;
+    word-break: break-word;
+}
+
+.message-row.received .message-bubble {
+    background-color: #333;
+}
+
+.chat-input {
+    display: flex;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #333;
+    background-color: #1c1c1c;
+}
+
+.typing-indicator {
+    font-style: italic;
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.placeholder {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
