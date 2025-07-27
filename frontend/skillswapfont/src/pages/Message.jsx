@@ -3,6 +3,10 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Message.css";
 
+// Constants for reconnection logic
+const MAX_RECONNECT_ATTEMPTS = 5;
+const RECONNECT_DELAY = 2000; // 2 seconds
+
 export default function Message() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -16,11 +20,29 @@ export default function Message() {
   const [wsConnected, setWsConnected] = useState(false);
   const [wsError, setWsError] = useState(null);
   const [reconnectAttempts, setReconnectAttempts] = useState(0);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   const ws = useRef(null);
   const typingTimeoutRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
   const chatBodyRef = useRef(null);
+
+  // Get current user ID from token
+  useEffect(() => {
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userId = payload?.user?.id;
+        if (userId) {
+          setCurrentUserId(userId);
+          console.log('Current user ID:', userId);
+        }
+      } catch (error) {
+        console.error('Failed to decode token:', error);
+        navigate('/login');
+      }
+    }
+  }, [token, navigate]);
 
   // Test WebSocket connection
   const testWebSocketConnection = async () => {
@@ -38,8 +60,7 @@ export default function Message() {
       console.error('WebSocket auth test failed:', error);
       if (error.response?.status === 401) {
         setWsError("Authentication failed. Please login again.");
-        // Optionally redirect to login
-        // navigate('/login');
+        navigate('/login');
       }
     }
   };
@@ -53,20 +74,29 @@ export default function Message() {
 
   // Fetch all contacts
   useEffect(() => {
+    if (!token) return;
+
     axios
       .get("http://127.0.0.1:8000/contacts", {
         headers: { Authorization: `Bearer ${token}` }
       })
-      .then((res) => setContacts(res.data || []))
+      .then((res) => {
+        console.log('Contacts loaded:', res.data);
+        setContacts(res.data || []);
+      })
       .catch((err) => {
         console.error("Failed to fetch contacts:", err);
-        setWsError("Failed to load contacts");
+        if (err.response?.status === 401) {
+          navigate('/login');
+        } else {
+          setWsError("Failed to load contacts");
+        }
       });
-  }, [token]);
+  }, [token, navigate]);
 
   // WebSocket connection and management
   useEffect(() => {
-    if (!selectedUserId || !token) {
+    if (!selectedUserId || !token || !currentUserId) {
       // Clean up WebSocket when no user is selected or no token
       if (ws.current) {
         ws.current.close();
@@ -87,17 +117,22 @@ export default function Message() {
       clearTimeout(connectTimer);
       cleanupWebSocket();
     };
-  }, [selectedUserId, token]);
+  }, [selectedUserId, token, currentUserId]);
 
   const connectWebSocket = () => {
+    if (!currentUserId) {
+      console.error('Cannot connect WebSocket: current user ID not available');
+      return;
+    }
+
     try {
       // Close existing connection if any
       if (ws.current) {
         ws.current.close();
       }
 
-      // Add authentication token to WebSocket connection
-      const wsUrl = `ws://127.0.0.1:8000/ws/${selectedUserId}?token=${encodeURIComponent(token)}`;
+      // Use current user's ID for WebSocket connection, not the selected user's ID
+      const wsUrl = `ws://127.0.0.1:8000/ws/${currentUserId}?token=${encodeURIComponent(token)}`;
       console.log('Connecting to WebSocket:', wsUrl);
 
       const socket = new WebSocket(wsUrl);
@@ -165,8 +200,11 @@ export default function Message() {
     } else if (data.type === "message_sent") {
       console.log('Message sent confirmation:', data);
     } else if (data.type === "typing") {
-      if (data.from_user !== selectedUserId) {
-        setTypingUser(data.from_user);
+      if (data.from_user !== currentUserId) {
+        // Get the name of the typing user
+        const typingContact = contacts.find(c => c.userid === data.from_user);
+        const typingUserName = typingContact ? typingContact.name : `User ${data.from_user}`;
+        setTypingUser(typingUserName);
 
         // Clear existing timeout
         if (typingTimeoutRef.current) {
@@ -202,12 +240,12 @@ export default function Message() {
 
   // Load chat history
   const fetchChat = async () => {
-    if (!selectedUserId) return;
+    if (!selectedUserId || !token) return;
 
     try {
       const res = await axios.get("http://127.0.0.1:8000/chathistory", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { user_id: selectedUserId } // Add user_id parameter if your API supports it
+        params: { user_id_filter: selectedUserId } // Use the correct parameter name
       });
       setChatHist(res.data);
 
@@ -219,7 +257,11 @@ export default function Message() {
       }, 100);
     } catch (error) {
       console.error("Failed to fetch chat:", error);
-      setWsError("Failed to load chat history");
+      if (error.response?.status === 401) {
+        navigate('/login');
+      } else {
+        setWsError("Failed to load chat history");
+      }
     }
   };
 
