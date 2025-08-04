@@ -7,3 +7,4 @@ asyncpg
 python-multipart
 passlib
 pyjwt
+websocket

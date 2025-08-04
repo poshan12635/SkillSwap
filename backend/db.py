@@ -22,7 +22,7 @@ class MessageDetail(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     messagesentby = Column(Integer, ForeignKey("userinfo.id"))
-    messagesentto = Column(Integer, ForeignKey("userinfo.id"))
+    messagesento = Column(Integer, ForeignKey("userinfo.id"))
     message = Column(String)
     messagedate = Column(DATETIME, default=datetime.utcnow)
 

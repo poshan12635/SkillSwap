@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException,Query
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,7 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Remove duplicate function - keep only one get_db
 async def get_db():
     async with SessionLocal() as session:
         try:
@@ -45,6 +44,17 @@ async def get_user_id(token: str = Depends(oauth2_scheme)):
         return user["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+
+async def authenticate_websocket(token: str):
+    """Authenticate WebSocket connection using token"""
+    try:
+        payload = decode_token(token)
+        user = payload.get("user")
+        if user is None or "id" not in user:
+            return None
+        return user["id"]
+    except jwt.PyJWTError:
+        return None
 
 @app.post("/register")
 async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
@@ -182,10 +192,9 @@ async def get_blog(limit: int = 10, offset: int = 0, db: AsyncSession = Depends(
                 "projectdetail": blog.projectdetail,
                 "skill": blog.skill,
                 "yourself": blog.yourself,
-                "expectfrom": blog.expectfrom,  # Fixed typo: expectform -> expectfrom
+                "expectfrom": blog.expectfrom,
                 "whyjoin": blog.whyjoin,
                 "youdo": blog.youdo,
-                "created_at": blog.created_at if hasattr(blog, 'created_at') else None
             })
 
         return blog_list
@@ -194,7 +203,7 @@ async def get_blog(limit: int = 10, offset: int = 0, db: AsyncSession = Depends(
         raise HTTPException(status_code=500, detail="Failed to fetch blogs")
 
 @app.get("/chathistory")
-async def get_chathistory(user_id_filter: int = None, db: AsyncSession = Depends(get_db), user_id: int = Depends(get_user_id)):
+async def get_chathistory(user_id_filter: int = Query(None), db: AsyncSession = Depends(get_db), user_id: int = Depends(get_user_id)):
     try:
         if user_id_filter:
             # Get chat history with specific user
@@ -252,17 +261,6 @@ async def get_chathistory(user_id_filter: int = None, db: AsyncSession = Depends
     except Exception as e:
         logger.error(f"Error in chathistory: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch chat history")
-
-async def authenticate_websocket(token: str):
-    """Authenticate WebSocket connection using token"""
-    try:
-        payload = decode_token(token)
-        user = payload.get("user")
-        if user is None or "id" not in user:
-            return None
-        return user["id"]
-    except jwt.PyJWTError:
-        return None
 
 @app.websocket("/ws/{user_id}")
 async def chat_ws(websocket: WebSocket, user_id: int, token: str = Query(...)):
@@ -422,7 +420,16 @@ async def chat_ws(websocket: WebSocket, user_id: int, token: str = Query(...)):
             await db.close()
         logger.info(f"WebSocket cleanup completed for user {user_id}")
 
-# Test endpoint to verify WebSocket authentication
+@app.get("/contacts")
+async def get_contacts(db: AsyncSession = Depends(get_db), user_id: int = Depends(get_user_id)):
+    try:
+        result = await db.execute(text("SELECT userid, name FROM userinfo WHERE userid != :uid"), {"uid": user_id})
+        users = [{"userid": row[0], "name": row[1]} for row in result.fetchall()]
+        return users
+    except Exception as e:
+        logger.error(f"Error in contacts: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch contacts")
+
 @app.get("/ws-auth-test")
 async def websocket_auth_test(token: str = Depends(oauth2_scheme)):
     try:
@@ -435,18 +442,6 @@ async def websocket_auth_test(token: str = Depends(oauth2_scheme)):
     except HTTPException as e:
         raise e
 
-# Add connection status endpoint
-@app.get("/ws-status/{user_id}")
-async def websocket_status(user_id: int):
-    """Check if user is connected via WebSocket"""
-    is_connected = manager.is_user_connected(user_id)  # You'll need to implement this in your manager
-    return {
-        "user_id": user_id,
-        "connected": is_connected,
-        "timestamp": datetime.utcnow().isoformat()
-    }
-
-# Health check with WebSocket info
 @app.get("/health")
 async def health_check():
     return {
@@ -454,3 +449,5 @@ async def health_check():
         "websocket_endpoint": "/ws/{user_id}?token=YOUR_TOKEN",
         "timestamp": datetime.utcnow().isoformat()
     }
+
+#
